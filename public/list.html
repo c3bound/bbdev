@@ -15,7 +15,7 @@
 <div class="container">
   <table class="table table-hover">
     <tbody>
-      <tr ng-repeat="AlertStreamNasdaq in AlertStreamNasdaq | orderBy:'Symbol'" style="cursor:pointer">
+      <tr ng-repeat="Symbol in AlertStreamNasdaq | orderBy:'Symbol'" style="cursor:pointer">
         <td>
           <a ng-href="#/AlertStreamNasdaq/">{{ AlertStreamNasdaq.Symbol }} {{ AlertStreamNasdaq.MessageType }}</a>
         </td>
