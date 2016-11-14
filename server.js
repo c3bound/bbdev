@@ -18,7 +18,7 @@ var port     = process.env.PORT || 8080; // set our port
 
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://216.150.149.11:27017/BlackBoxBeta'); // connect to our database
-var Bear     = require('./app/models/bear');
+var AlertStreamNasdaq     = require('./app/models/bear');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -40,13 +40,13 @@ router.get('/', function(req, res) {
 
 // on routes that end in /bears
 // ----------------------------------------------------
-router.route('/bears')
+router.route('/AlertStreamNasdaq')
 
 
 
 	// get all the bears (accessed at GET http://localhost:8080/api/bears)
 	.get(function(req, res) {
-		Bear.find(function(err, bears) {
+		AlertStreamNasdaq.find(function(err, bears) {
 			if (err)
 				res.send(err);
 
