@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
-var CONTACTS_COLLECTION = "contacts";
+var CONTACTS_COLLECTION = "AlertStreamNasdaq";
 
 var app = express();
 app.use(express.static(__dirname + "/public"));
@@ -19,6 +19,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
     console.log(err);
     process.exit(1);
   }
+  else{console.log("Did not error", port);}
 
   // Save database object from the callback for reuse.
   db = database;
