@@ -1,95 +1,111 @@
+var express = require("express");
+var path = require("path");
+var bodyParser = require("body-parser");
+var mongodb = require("mongodb");
+var ObjectID = mongodb.ObjectID;
 
-// https://devcenter.heroku.com/articles/mongolab
-// http://todomvc.com/examples/angularjs/#/
-var express  = require('express'),
-    mongoose = require('mongoose'),
-    bodyParser = require('body-parser'),
+var CONTACTS_COLLECTION = "contacts";
 
-    // Mongoose Schema definition
-    Schema = new mongoose.Schema({
-      id       : String, 
-      title    : String,
-      completed: Boolean
-    }),
+var app = express();
+app.use(express.static(__dirname + "/public"));
+app.use(bodyParser.json());
 
-    Todo = mongoose.model('Todo', Schema);
+// Create a database variable outside of the database connection callback to reuse the connection pool in your app.
+var db;
 
-/*
- * I’m sharing my credential here.
- * Feel free to use it while you’re learning.
- * After that, create and use your own credential.
- * Thanks.
- *
-  MONGOLAB_URI=mongodb://example:example@ds053312.mongolab.com:53312/todolist
- * 'mongodb://example:example@ds053312.mongolab.com:53312/todolist'
- MONGOLAB_URI=mongodb://example:example@ds053312.mongolab.com:53312/todolist
- */
- MONGOLAB_URI='mongodb://example:example@ds053312.mongolab.com:53312/todolist';
-mongoose.connect(MONGOLAB_URI, function (error) {
-    if (error) console.error(error);
-    else console.log('mongo connected');
+// Connect to the database before starting the application server. 
+mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
+
+  // Save database object from the callback for reuse.
+  db = database;
+  console.log("Database connection ready");
+
+  // Initialize the app.
+  var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+  });
 });
 
-express()
-  // https://scotch.io/tutorials/use-expressjs-to-get-url-and-post-parameters
-  .use(bodyParser.json()) // support json encoded bodies
-  .use(bodyParser.urlencoded({ extended: true })) // support encoded bodies
+// CONTACTS API ROUTES BELOW
 
-  .get('/api', function (req, res) {
-    res.json(200, {msg: 'OK' });
-  })
+// Generic error handler used by all endpoints.
+function handleError(res, reason, message, code) {
+  console.log("ERROR: " + reason);
+  res.status(code || 500).json({"error": message});
+}
 
-  .get('/api/todos', function (req, res) {
-    // http://mongoosejs.com/docs/api.html#query_Query-find
-    Todo.find( function ( err, todos ){
-      res.json(200, todos);
-    });
-  })
+/*  "/contacts"
+ *    GET: finds all contacts
+ *    POST: creates a new contact
+ */
 
-  .post('/api/todos', function (req, res) {
-    var todo = new Todo( req.body );
-    todo.id = todo._id;
-    // http://mongoosejs.com/docs/api.html#model_Model-save
-    todo.save(function (err) {
-      res.json(200, todo);
-    });
-  })
+app.get("/contacts", function(req, res) {
+  db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get contacts.");
+    } else {
+      res.status(200).json(docs);  
+    }
+  });
+});
 
-  .del('/api/todos', function (req, res) {
-    // http://mongoosejs.com/docs/api.html#query_Query-remove
-    Todo.remove({ completed: true }, function ( err ) {
-      res.json(200, {msg: 'OK'});
-    });
-  })
+app.post("/contacts", function(req, res) {
+  var newContact = req.body;
+  newContact.createDate = new Date();
 
-  .get('/api/todos/:id', function (req, res) {
-    // http://mongoosejs.com/docs/api.html#model_Model.findById
-    Todo.findById( req.params.id, function ( err, todo ) {
-      res.json(200, todo);
-    });
-  })
+  if (!(req.body.firstName || req.body.lastName)) {
+    handleError(res, "Invalid user input", "Must provide a first or last name.", 400);
+  }
 
-  .put('/api/todos/:id', function (req, res) {
-    // http://mongoosejs.com/docs/api.html#model_Model.findById
-    Todo.findById( req.params.id, function ( err, todo ) {
-      todo.title = req.body.title;
-      todo.completed = req.body.completed;
-      // http://mongoosejs.com/docs/api.html#model_Model-save
-      todo.save( function ( err, todo ){
-        res.json(200, todo);
-      });
-    });
-  })
+  db.collection(CONTACTS_COLLECTION).insertOne(newContact, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to create new contact.");
+    } else {
+      res.status(201).json(doc.ops[0]);
+    }
+  });
+});
 
-  .del('/api/todos/:id', function (req, res) {
-    // http://mongoosejs.com/docs/api.html#model_Model.findById
-    Todo.findById( req.params.id, function ( err, todo ) {
-      // http://mongoosejs.com/docs/api.html#model_Model.remove
-      todo.remove( function ( err, todo ){
-        res.json(200, {msg: 'OK'});
-      });
-    });
-  })
+/*  "/contacts/:id"
+ *    GET: find contact by id
+ *    PUT: update contact by id
+ *    DELETE: deletes contact by id
+ */
 
-  .use(express.static(__dirname + '/'))
-  .listen(process.env.PORT || 5000);
+app.get("/contacts/:id", function(req, res) {
+  db.collection(CONTACTS_COLLECTION).findOne({ _id: new ObjectID(req.params.id) }, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to get contact");
+    } else {
+      res.status(200).json(doc);  
+    }
+  });
+});
+
+app.put("/contacts/:id", function(req, res) {
+  var updateDoc = req.body;
+  delete updateDoc._id;
+
+  db.collection(CONTACTS_COLLECTION).updateOne({_id: new ObjectID(req.params.id)}, updateDoc, function(err, doc) {
+    if (err) {
+      handleError(res, err.message, "Failed to update contact");
+    } else {
+      res.status(204).end();
+    }
+  });
+});
+
+app.delete("/contacts/:id", function(req, res) {
+  db.collection(CONTACTS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function(err, result) {
+    if (err) {
+      handleError(res, err.message, "Failed to delete contact");
+    } else {
+      res.status(204).end();
+    }
+  });
+});
