@@ -23,7 +23,7 @@ angular.module("contactsApp", ['ngRoute'])
             })
     })
     .service("AlertStreamNasdaq", function($http) {
-        this.getContacts = function() {
+        this.getAlertStreamNasdaq = function() {
             return $http.get("/AlertStreamNasdaq").
                 then(function(response) {
                     return response;
