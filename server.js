@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
-var CONTACTS_COLLECTION = "AlertStreamNasdaq";
+var CONTACTS_COLLECTION = "contacts";
 
 var app = express();
 app.use(express.static(__dirname + "/public"));
@@ -14,15 +14,15 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server. 
-mongodb.MongoClient.connect('mongodb://216.150.149.11:27017/', function (err, database) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
   if (err) {
     console.log(err);
     process.exit(1);
   }
 
   // Save database object from the callback for reuse.
-  db = BlackBoxBeta;
-  console.log("Database BLackBox ready");
+  db = database;
+  console.log("Database connection ready");
 
   // Initialize the app.
   var server = app.listen(process.env.PORT || 8080, function () {
@@ -50,7 +50,6 @@ app.get("/contacts", function(req, res) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
       res.status(200).json(docs);  
-	  handleError(res, err.message, "Failed to get contacts.");
     }
   });
 });
