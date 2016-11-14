@@ -18,19 +18,7 @@ var port     = process.env.PORT || 8080; // set our port
 
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://216.150.149.11:27017/BlackBoxBeta'); // connect to our database
-
-var AlertStreamNasdaq = new Schema({
-  _id : String,
-    Symbol : String,
-    CreatedDttm : String,
-    MessageType : String,
-    DateTime : String,
-    PriceAtAlert : String,
-    Message : String,
-    Exchange : String
-}, { collection: 'AlertStreamNasdaq' });
-
-
+var Bear     = require('./app/models/bear');
 
 // ROUTES FOR OUR API
 // =============================================================================
