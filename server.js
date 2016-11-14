@@ -44,8 +44,8 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
-app.get("/AlertStreamNasdaq", function(req, res) { 
-  db.collection("AlertStreamNasdaq").find({}).toArray(function(err, docs) {
+app.get("/contacts", function(req, res) {
+  db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {

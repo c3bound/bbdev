@@ -71,7 +71,7 @@ angular.module("contactsApp", ['ngRoute'])
         }
     })
     .controller("ListController", function(contacts, $scope) {
-        $scope.contacts = contacts.data;
+        $scope.contacts = AlertStreamNasdaq.data;
     })
     .controller("NewContactController", function($scope, $location, Contacts) {
         $scope.back = function() {
