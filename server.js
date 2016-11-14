@@ -21,7 +21,7 @@ mongodb.MongoClient.connect('mongodb://216.150.149.11:27017/BlackBoxBeta', funct
   }
 
   // Save database object from the callback for reuse.
-  db = database;
+  db = 'mongodb://216.150.149.11:27017/BlackBoxBeta';
   console.log("Database connection ready");
 
   // Initialize the app.
