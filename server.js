@@ -45,7 +45,7 @@ function handleError(res, reason, message, code) {
  */
 
 app.get("/AlertStreamNasdaq", function(req, res) { 
-  db.collection('AlertStreamNasdaq').find({}).toArray(function(err, docs) {
+  db.collection("AlertStreamNasdaq").find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
