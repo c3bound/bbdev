@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
-var CONTACTS_COLLECTION = "contacts";
+var CONTACTS_COLLECTION = "AlertStreamNasdaq";
 
 var app = express();
 app.use(express.static(__dirname + "/public"));
@@ -12,12 +12,13 @@ app.use(bodyParser.json());
 
 // Create a database variable outside of the database connection callback to reuse the connection pool in your app.
 var db;
-
+var uristring = 'mongodb://216.150.149.11:27017/BlackBoxBeta';
 // Connect to the database before starting the application server. 
-mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
-  if (err) {
-    console.log(err);
-    process.exit(1);
+mongodb.MongoClient.connect(uristring, function (err, database) {
+   if (err) { 
+    console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+  } else {
+    console.log ('Succeeded connected to: ' + uristring);
   }
 
   // Save database object from the callback for reuse.
@@ -44,10 +45,10 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
-app.get("/contacts", function(req, res) {
+app.get("/AlertStreamNasdaq", function(req, res) {
   db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
-      handleError(res, err.message, "Failed to get contacts.");
+      handleError(res, err.message, "Failed to get AlertStreamNasdaq.");
     } else {
       res.status(200).json(docs);  
     }

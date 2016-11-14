@@ -5,8 +5,8 @@ angular.module("contactsApp", ['ngRoute'])
                 templateUrl: "list.html",
                 controller: "ListController",
                 resolve: {
-                    contacts: function(Contacts) {
-                        return Contacts.getContacts();
+                    AlertStreamNasdaq: function(AlertStreamNasdaq) {
+                        return AlertStreamNasdaq.getAlertStreamNasdaq();
                     }
                 }
             })
@@ -22,13 +22,13 @@ angular.module("contactsApp", ['ngRoute'])
                 redirectTo: "/"
             })
     })
-    .service("Contacts", function($http) {
+    .service("AlertStreamNasdaq", function($http) {
         this.getContacts = function() {
-            return $http.get("/contacts").
+            return $http.get("/AlertStreamNasdaq").
                 then(function(response) {
                     return response;
                 }, function(response) {
-                    alert("Error finding contacts.");
+                    alert("Error finding AlertStreamNasdaq.");
                 });
         }
         this.createContact = function(contact) {
@@ -70,8 +70,8 @@ angular.module("contactsApp", ['ngRoute'])
                 });
         }
     })
-    .controller("ListController", function(contacts, $scope) {
-        $scope.contacts = contacts.data;
+    .controller("ListController", function(AlertStreamNasdaq, $scope) {
+        $scope.AlertStreamNasdaq = AlertStreamNasdaq.data;
     })
     .controller("NewContactController", function($scope, $location, Contacts) {
         $scope.back = function() {
