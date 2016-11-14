@@ -46,7 +46,7 @@ router.route('/AlertStreamNasdaq')
 
 	// get all the bears (accessed at GET http://localhost:8080/api/bears)
 	.get(function(req, res) {
-		AlertStreamNasdaq.find(function(err, bears) {
+		Bear.find(function(err, bears) {
 			if (err)
 				res.send(err);
 

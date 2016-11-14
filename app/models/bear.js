@@ -3,4 +3,4 @@ var Schema       = mongoose.Schema;
 
 
 
-module.exports = mongoose.model('AlertStreamNasdaq', 'AlertStreamNasdaq');
+module.exports = mongoose.model('Bear', 'AlertStreamNasdaq');
