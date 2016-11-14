@@ -19,7 +19,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
     console.log(err);
     process.exit(1);
   }
-  else{console.log("Did not error", port);}
+  
 
   // Save database object from the callback for reuse.
   db = database;
