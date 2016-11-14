@@ -19,10 +19,18 @@ var port     = process.env.PORT || 8080; // set our port
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://216.150.149.11:27017/BlackBoxBeta'); // connect to our database
 
+var AlertStreamNasdaq = new Schema({
+  _id : String,
+    Symbol : String,
+    CreatedDttm : String,
+    MessageType : String,
+    DateTime : String,
+    PriceAtAlert : String,
+    Message : String,
+    Exchange : String
+}, { collection: 'AlertStreamNasdaq' });
 
 
-var collectionName = 'AlertStreamNasdaq'
-var M = mongoose.model('AlertStreamNasdaq', schema, collectionName);
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -50,7 +58,7 @@ router.route('/AlertStreamNasdaq')
 
 	// get all the bears (accessed at GET http://localhost:8080/api/bears)
 	.get(function(req, res) {
-		M.find(function(err, bears) {
+		AlertStreamNasdaq.find(function(err, bears) {
 			if (err)
 				res.send(err);
 
