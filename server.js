@@ -14,15 +14,15 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server. 
-mongodb.MongoClient.connect('mongodb://216.150.149.11:27017/BlackBoxBeta', function (err, database) {
+mongodb.MongoClient.connect('mongodb://216.150.149.11:27017/', function (err, database) {
   if (err) {
     console.log(err);
     process.exit(1);
   }
 
   // Save database object from the callback for reuse.
-  db = database;
-  console.log("Database connection ready");
+  db = BlackBoxBeta;
+  console.log("Database BLackBox ready");
 
   // Initialize the app.
   var server = app.listen(process.env.PORT || 8080, function () {
@@ -50,7 +50,7 @@ app.get("/contacts", function(req, res) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
       res.status(200).json(docs);  
-	  handleError(res, err.message, "GOT THE CONTACTS.");
+	  handleError(res, err.message, "Failed to get contacts.");
     }
   });
 });
