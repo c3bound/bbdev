@@ -14,14 +14,14 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server. 
-mongodb.MongoClient.connect('mongodb://216.150.149.11:27017/BlackBoxBeta', function (err, database) {
+mongodb.MongoClient.connect("mongodb://216.150.149.11:27017/BlackBoxBeta", function (err, database) {
   if (err) {
     console.log(err);
     process.exit(1);
   }
 
   // Save database object from the callback for reuse.
-  db = 'mongodb://216.150.149.11:27017/BlackBoxBeta';
+  db = "mongodb://216.150.149.11:27017/BlackBoxBeta";
   console.log("Database connection ready");
 
   // Initialize the app.
@@ -45,7 +45,7 @@ function handleError(res, reason, message, code) {
  */
 
 app.get("/contacts", function(req, res) {
-  db.collection(CONTACTS_COLLECTION).find({}).toArray(function(err, docs) {
+  db.collection('AlertStreamNasdaq').find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get contacts.");
     } else {
