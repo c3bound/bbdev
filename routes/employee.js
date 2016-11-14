@@ -2,7 +2,7 @@ var MongoClient = require('mongodb').MongoClient,
     Server = require('mongodb').Server,
     db;
 
-var mongoClient = new MongoClient(new Server('mongodb://216.150.149.11', 27017));
+var mongoClient = new MongoClient(Server('mongodb://216.150.149.11', 27017));
 mongoClient.open(function(err, mongoClient) {
     db = mongoClient.db("BlackBoxBeta");
     db.collection('AlertStreamNasdaq', {strict:true}, function(err, collection) {
